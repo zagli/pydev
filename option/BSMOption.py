@@ -37,6 +37,12 @@ class BSMOption():
         self.time_to_expiry = days_to_maturity/365
         
     def _calcd1(self):
+        if self.S <= 0:
+            raise ValueError("Spot price must be positive")
+        if self.K <= 0:
+            raise ValueError("Strike must be positive")
+        if self.time_to_expiry <= 0:
+            raise ValueError("Days to maturity arg must be positive") 
         return (np.log(self.S / self.K) + (self.r + self.vol**2 / 2.0) * self.time_to_expiry) / (self.vol * np.sqrt(self.time_to_expiry))
 
     def _calcd2(self):
@@ -44,28 +50,12 @@ class BSMOption():
         
     def calculate_call_price(self):
         #calculates call price of a vanilla european option contract
-        if self.S <= 0:
-            raise ValueError("Spot price must be positive")
-        if self.K <= 0:
-            raise ValueError("Strike must be positive")
-        if self.time_to_expiry <= 0:
-            raise ValueError("Days to maturity arg must be positive")
-        d1 = (np.log(self.S/self.K) + (self.r + (self.vol ** 2) / 2.0)*self.time_to_expiry)/(self.vol*np.sqrt(self.time_to_expiry))
-        d2 = d1 - self.vol*np.sqrt(self.time_to_expiry)
         d1 = self._calcd1()
         d2 = self._calcd2()
         return self.S*norm.cdf(d1) - self.K*np.exp(-self.r*self.time_to_expiry)*norm.cdf(d2)
 
     def calculate_put_price(self):
         #calculates put price of a vanilla european option contract
-        if self.S <= 0:
-            raise ValueError("Spot price must be positive")
-        if self.K <= 0:
-            raise ValueError("Strike must be positive")
-        if self.time_to_expiry <= 0:
-            raise ValueError("Days to maturity arg must be positive")
-        d1 = (np.log(self.S/self.K) + (self.r + (self.vol ** 2) / 2.0)*self.time_to_expiry)/(self.vol*np.sqrt(self.time_to_expiry))
-        d2 = d1 - self.vol*np.sqrt(self.time_to_expiry)
         d1 = self._calcd1()
         d2 = self._calcd2()
         return self.K*np.exp(-self.r*self.time_to_expiry)*norm.cdf(-d2) - self.S*norm.cdf(-d1)

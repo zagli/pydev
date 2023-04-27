@@ -47,6 +47,14 @@ class TestBSMOption(unittest.TestCase):
         optmodel = BSMOption(0, 19, self.days_to_expiry, self.riskfree_rate, self.vol)
         with self.assertRaises(ValueError):
             optmodel.calculate_call_price()
+        
+        optmodel = BSMOption(19, 0, self.days_to_expiry, self.riskfree_rate, self.vol)
+        with self.assertRaises(ValueError):
+            optmodel.calculate_put_price()
+            
+        optmodel = BSMOption(0, 19, self.days_to_expiry, self.riskfree_rate, self.vol)
+        with self.assertRaises(ValueError):
+            optmodel.calculate_put_price()
             
     def test_invalid_maturity(self):
         optmodel = BSMOption(19, 19, 0, self.riskfree_rate, self.vol)
