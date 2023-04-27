@@ -74,17 +74,21 @@ def main():
     strike_price = float(input("Strike: ").replace("$",""))
     rf_rate = float(input("Risk-free rate as percentage:").replace("%","")) / float('100')
     vol = float(input("Vol: ").replace("%","")) / float('100')
-    time_to_expiry = int(input("Time to expiration (in days): "))
+    date_input = input('Enter a date in YYYY-MM-DD format: ')
+    
+    year, month, day = map(int, date_input.split('-'))
+    expiry_date = dt.date(year, month, day)
+    days_to_expiry = int((expiry_date-dt.date.today()).days)
+    print("Time to expiration is: ",days_to_expiry,"\n")
 
-    optmodel = BSMOption(spot_price, strike_price, time_to_expiry, rf_rate ,vol)
+    optmodel = BSMOption(spot_price, strike_price, days_to_expiry, rf_rate ,vol)
     # Calculate the value of a call and put option based on the inputs
     call_price = optmodel.calculate_call_price()
     put_price = optmodel.calculate_put_price()
     
     print("Call Price:{0}".format(call_price))
     print("Put Price:{0}".format(put_price))
-
-
+    
 if __name__ == "__main__":
     main()
 
